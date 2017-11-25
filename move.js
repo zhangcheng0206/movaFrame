@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 2016/2/28.
  */
-function fnMove (obj,json,fning,fn){
+function fnMove (obj,json,fn){
     clearInterval(obj.timer)//清除正在执行的定时器
     var iSpeed  = 0;
     obj.timer = setInterval(function(){
@@ -11,8 +11,7 @@ function fnMove (obj,json,fning,fn){
             if(attr == "opacity"){//透明度
                 iCur = Math.round(parseFloat(getStyle(obj,"opacity"))*100);
             }else{
-                iCur = parseInt(getStyle(obj,attr))();;
-                fning();
+                iCur = parseInt(getStyle(obj,attr));
             }
 
             iSpeed = (json[attr] - iCur)/5;//获取相对速度
@@ -51,4 +50,34 @@ function getStyle(obj,attr){//获取css样式
     else{
         return getComputedStyle(obj,false)[attr];
     }
+}
+
+function scrollMove(target,time){
+    var oBody=document.body||document.documentElement;
+    //获得本次运动的距离， 终点-起点
+    var distance=target-oBody.scrollTop;
+    // console.log(distance);
+    var speed=distance/(time/30);
+    
+    speed=speed>0?Math.floor(speed):Math.ceil(speed);
+    console.log(speed);
+    var timer=setInterval(function(){
+        if(distance>0){
+            if(oBody.scrollTop>=target){
+                clearInterval(timer);
+                oBody.scrollTop=target;
+                return;
+            }
+        }else if(distance<0){
+            if(oBody.scrollTop<=target){
+                clearInterval(timer);
+                oBody.scrollTop=target;
+                return;
+            }
+        }else{
+            clearInterval(timer);
+            return;
+        }       
+        oBody.scrollTop+=speed;
+    },30);
 }
